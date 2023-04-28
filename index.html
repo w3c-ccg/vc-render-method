@@ -366,5 +366,36 @@ string in `svgImage` that matches the key with the associated value in the
       </section>
     </section>
 
+    <section>
+      <h2>Security Considerations</h2>
+
+      <p class="issue" title="Summary of Security Considerations">
+The list of security considerations listed below need to be converted into
+sections:
+      </p>
+
+      <ul>
+        <li>
+If a cryptographic hash for a display template isn't provided, you can't know
+if it has been tampered with since issuance. There are good reasons an issuer
+might allow for this, such as being able to update the look/feel of a
+long-lived credential over time.
+        </li>
+        <li>
+If a cryptographic hash for a display template is provided, implementations
+that don't check it run the risk of display attacks, which might sound benign,
+but they aren't; Verifiers might use verifiable displays to show what the
+issuer intended, and if those displays don't check the cryptographic hash,
+they might show the wrong info to an individual checking the credential on
+the verifiable display.
+        </li>
+        <li>
+Fetching resources from external locations can be used as a denial-of-service
+attack vector where the resource is never served, or served at a very slow pace.
+        </li>
+      </ul>
+
+    </section>
+
   </body>
 </html>
