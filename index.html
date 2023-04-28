@@ -219,6 +219,105 @@ definition.
         </dl>
       </section>
 
+      <section>
+        <h4>SvgRenderingTemplate2023</h4>
+
+        <p>
+When an <a>issuer</a> desires to specify SVG rendering instructions for a
+<a>verifiable credential</a>, they MAY add a `render` property that uses the
+data model described below.
+        </p>
+
+        <table class="simple">
+          <thead>
+            <tr>
+              <th style="white-space: nowrap">Property</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>id</td>
+              <td>
+A URL that dereferences to an SVG image [[SVG]] with an associated
+`image/svg+xml` media type.
+              </td>
+            </tr>
+            <tr>
+              <td>type</td>
+              <td>
+The <code>type</code> property MUST be <code>SvgRenderingTemplate2023</code>.
+              </td>
+            </tr>
+            <tr>
+              <td>name</td>
+              <td>
+A name that can be used by a display to express the type of rendering that
+is associated with the render method. This property might be used in a
+graphical interface that enables an individual to select between multiple
+presentation modes.
+              </td>
+            </tr>
+            <tr>
+              <td>css3MediaQuery</td>
+              <td>
+A CSS Level 3 Media Query that can be used to specify desired characteristics
+in the display device. If there are multiple render methods, the best match
+to the CSS Level 3 Media Query will be used by default. It is expected that
+an individual could override this preference through a manual process.
+              </td>
+            </tr>
+            <tr>
+              <td>digestMultibase</td>
+                <td>
+An optional multibase-encoded multihash of the SVG image. The multibase value
+MUST be `z` and the multihash value MUST be SHA-2 with 256-bits of output
+(`0x12`).
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <p>
+The data model shown above is expressed in a <a>verifiable credential</a>
+in the example below.
+          </p>
+
+          <pre class="example nohighlight"
+          title="Usage of the render property by an issuer">
+{
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2",
+    "https://www.w3.org/ns/credentials/examples/v2"
+  ],
+  "id": "http://example.edu/credentials/3732",
+  "type": ["VerifiableCredential", "UniversityDegreeCredential"],
+  "issuer": "https://example.edu/issuers/14",
+  "validFrom": "2010-01-01T19:23:24Z",
+  "credentialSubject": {
+    "id": "did:example:ebfeb1f712ebc6f1c276e12ec21",
+    "degree": {
+      "type": "BachelorDegree",
+      "name": "Bachelor of Science and Arts"
+    }
+  },
+  <span class="highlight">"render": [{
+    "id": "https://example.edu/credentials/BachelorDegree.svg",
+    "type": "SvgRenderingTemplate2023",
+    "name": "Portrait Mode",
+    "css3MediaQuery": "@media (orientation: portrait)",
+    "digestMultibase": "zQmAPdhyxzznFCwYxAp2dRerWC85Wg6wFl9G270iEu5h6JqW"
+  }]
+  </span>
+}
+        </pre>
+
+        <p>
+In the example above, the <a>issuer</a> has provided an SVG rendering template
+for a bachelor's degree that will be filled in with the information in the
+<a>verifiable credential</a>. The rendering is preferred when the device or
+paper is in a portrait (display is taller than it is wider) orientation.
+        </p>
     </section>
 
     <section>
