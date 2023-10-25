@@ -212,7 +212,7 @@ The value of the `renderMethod` property MUST specify one or
 more rendering methods that can be used by software to express the
 <a>verifiable credential</a> using a visual, auditory, or haptic mechanism. Each
 `renderMethod` value MUST specify its `type`, for example,
-`SvgRenderingTemplate2023`. The precise contents of each rendering
+`SvgRenderingTemplate`. The precise contents of each rendering
 hint is determined by the specific `renderMethod` `type`
 definition.
           </dd>
@@ -220,7 +220,7 @@ definition.
       </section>
 
       <section>
-        <h4>SvgRenderingTemplate2023</h4>
+        <h4>SvgRenderingTemplate</h4>
 
         <p>
 When an <a>issuer</a> desires to specify SVG rendering instructions for a
@@ -246,7 +246,7 @@ A URL that dereferences to an SVG image [[SVG]] with an associated
             <tr>
               <td>type</td>
               <td>
-The <code>type</code> property MUST be <code>SvgRenderingTemplate2023</code>.
+The <code>type</code> property MUST be <code>SvgRenderingTemplate</code>.
               </td>
             </tr>
             <tr>
@@ -303,7 +303,7 @@ in the example below.
   },
   <span class="highlight">"renderMethod": [{
     "id": "https://example.edu/credentials/BachelorDegree.svg",
-    "type": "SvgRenderingTemplate2023",
+    "type": "SvgRenderingTemplate",
     "name": "Portrait Mode",
     "css3MediaQuery": "@media (orientation: portrait)",
     "digestMultibase": "zQmAPdhyxzznFCwYxAp2dRerWC85Wg6wFl9G270iEu5h6JqW"
@@ -330,7 +330,7 @@ for rendering methods.
     </p>
 
     <section>
-      <h5>Render (SvgRenderingTemplate2023)</h5>
+      <h5>Render (SvgRenderingTemplate)</h5>
 
       <p>
 The following algorithm is used to transform the SVG image template into the
