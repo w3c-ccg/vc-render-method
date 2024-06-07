@@ -350,6 +350,141 @@ for a bachelor's degree that will be filled in with the information in the
 paper is in a portrait (display is taller than it is wider) orientation.
         </p>
     </section>
+
+    <section>
+      <h4>OpenAttestationEmbeddedRenderer</h4>
+    
+      <p>
+        OpenAttestationEmbeddedRenderer is used by an issuer to render a verifiable
+        credential. The verifiable credential is rendered in HTML within an embedded
+        <code>&ltiframe&gt</code> through a Template Renderer website referenced in
+        the document. This arrangement allows for interactive selective disclosure
+        using OpenAttestationMerkleProofSignature2018.
+      </p>
+      <p>
+        The Template Renderer is a web application embedded in an iframe. It renders
+        verifiable credentials based on selected templates and must listen for
+        specific messages from the Host application to facilitate the rendering
+        process.
+      </p>
+      <p>
+        There currently exists a number of OpenAttestationEmbeddedRenderer issuers
+        and decentralized renderer implementations.
+      </p>
+      <p>
+        When an <a>issuer</a> desires to specify an embedded rendering instructions
+        for a <a>verifiable credential</a>, they MAY add a `renderMethod` property
+        that uses the data model described below.
+      </p>
+    
+      <table class="simple">
+        <thead>
+          <tr>
+            <th>Property</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>id</td>
+            <td>
+              A URL that locates a website that implements the
+              OpenAttestationEmbeddedRenderer Action API.
+            </td>
+          </tr>
+          <tr>
+            <td>type</td>
+            <td>The `type` property MUST be `OpenAttestationEmbeddedRenderer`.</td>
+          </tr>
+          <tr>
+            <td>renderName</td>
+            <td>
+              Name of the template used by the website specified by `id` to render
+              the document. A different template can be used for the decentralized
+              renderer to present a different HTML view of the verifiable
+              credential.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    
+      <p>
+        The data model shown above is expressed in a <a>verifiable credential</a> in
+        the example below.
+      </p>
+    
+      <pre
+        class="example nohighlight"
+        title="Usage of the renderMethod property by an issuer"
+      >
+    {
+      "@context": [
+        "https://www.w3.org/ns/credentials/v2",
+        "https://schemata.openattestation.com/com/openattestation/4.0/alpha-context.json"
+      ],
+      "type": ["VerifiableCredential", "OpenAttestationCredential"],
+      "validFrom": "2021-03-08T12:00:00+08:00",
+      "name": "Republic of Singapore Driving Licence",
+      "issuer": {
+        "id": "did:ethr:0xB26B4941941C51a4885E5B7D3A1B861E54405f90",
+        "type": "OpenAttestationIssuer",
+        "name": "Government Technology Agency of Singapore (GovTech)",
+        "identityProof": { "identityProofType": "DNS-DID", "identifier": "example.openattestation.com" }
+      },
+      "credentialSubject": {
+        "id": "urn:uuid:a013fb9d-bb03-4056-b696-05575eceaf42",
+        "type": ["DriversLicense"],
+        "name": "John Doe",
+        "address": "123 Choa Chu Kang Road, Singapore 123456",
+        "licenses": [
+          {
+            "class": "3",
+            "description": "Motor cars with unladen weight <= 3000kg",
+            "effectiveDate": "2013-05-16T00:00:00+08:00"
+          },
+          {
+            "class": "3A",
+            "description": "Motor cars with unladen weight <= 3000kg",
+            "effectiveDate": "2013-05-16T00:00:00+08:00"
+          }
+        ]
+      },
+      <span class="highlight">"renderMethod": [{
+        "id": "https://demo-renderer.opencerts.io",
+        "type": "OpenAttestationEmbeddedRenderer",
+        "rendererName": "GOVTECH_DEMO"
+      }]</span>
+    }
+      </pre>
+    
+      <p>
+        The <a>verifiable credential</a> specifies a decentralized renderer at
+        `https://demo-renderer.opencerts.io`, using the template named
+        `GOVTECH_DEMO`.
+      </p>
+      <p>
+        The decentralized renderer can support different templates that can provide
+        different views of the verifiable credentials. Below are two renderings of
+        the same <a>verifiable credential</a> using different templates.
+      </p>
+    
+      <figure id="oa-embedded-certificate">
+        <img
+          style="width: 100%"
+          src="/images/oa-embedded-certificate.png"
+          alt="Certificate Template"
+        />
+        <figcaption>Certificate Template</figcaption>
+      </figure>
+      <figure id="oa-embedded-transcript">
+        <img
+          style="width: 100%"
+          src="/images/oa-embedded-transcript.png"
+          alt="Transcript Template"
+        />
+        <figcaption>Transcript Template</figcaption>
+      </figure>
+    </section>
   </section>
 
   <section>
@@ -394,6 +529,207 @@ string in `svgImage` that matches the key with the associated value in the
 `replacementMap`.
           </li>
         </ol>
+      </section>
+
+      <section>
+        <h5>Action API (OpenAttestationEmbeddedRenderer)</h5>
+      
+        <p>
+          The Host is the application that displays the document with the help of the
+          Template Renderer. The Template Renderer MUST be a web application embedded
+          within an iframe specified by renderMethod.id. It MUST communicate with the
+          Host application using postMessage API to perform actions.
+        </p>
+      
+        <p>
+          All actions follow the same structure. They are composed of `type` and
+          `payload`:
+        </p>
+        <ol class="algorithm">
+          <li>
+            `type` indicates the kind of action being executed, for instance,
+            `RENDER_DOCUMENT` means rendering a document. The type of an action is
+            mandatory.
+          </li>
+          <li>
+            `payload` indicates optional data associated to the type, for instance,
+            the content of the document to render.
+          </li>
+        </ol>
+      
+        <p>
+          An open source reference implementation is available on
+          <a
+            href="https://github.com/Open-Attestation/decentralized-renderer-react-components"
+            >GitHub</a
+          >.
+        </p>
+        <p>
+          The interaction between the Host and the Template Renderer is illustrated in
+          the following diagram.
+        </p>
+        <figure id="oa-embedded-sequence-diagram">
+          <img
+            style="width: 100%"
+            src="/images/oa-embedded-sequence-diagram.png"
+            alt="Sequence Diagram"
+          />
+          <figcaption>Sequence Diagram</figcaption>
+        </figure>
+      
+        <section>
+          <h6>Host-to-Frame Actions</h6>
+      
+          <p>
+            When the iframe is first displayed, the host sends commands to the iframe
+            to render the document. The 4 types of actions supported are described
+            below.
+          </p>
+      
+          <table class="simple">
+            <thead>
+              <tr>
+                <th>type</th>
+                <th>payload</th>
+                <th>action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>`GET_TEMPLATES`</td>
+                <td><pre>{ type: "GET_TEMPLATES" }</pre></td>
+                <td>
+                  Obtain a list of templates supported by the renderer for the given
+                  document. The list of templates is returned from UPDATE_TEMPLATES
+                  call from the iframe.
+                </td>
+              </tr>
+              <tr>
+                <td>`SELECT_TEMPLATE`</td>
+                <td>
+                  <pre>
+      {
+        type: "SELECT_TEMPLATE",
+        payload: "CUSTOM_TEMPLATE"
+      }
+                  </pre>
+                </td>
+                <td>
+                  Select the template to be used for rendering. It should be from the
+                  list returned by GET_TEMPLATES. If not found, a default template is
+                  used.
+                </td>
+              </tr>
+              <tr>
+                <td>`RENDER_DOCUMENT`</td>
+                <td>
+                  <pre>
+      { 
+        type: "RENDER_DOCUMENT",
+        payload: {
+          document: {
+            credentialSubject: …,
+            renderMethod: … 
+          } 
+        }
+      }
+                  </pre>
+                </td>
+                <td>
+                  Render the verifiable credential inside the IFRAME using the
+                  selected template. Document is JSON object form of the verifiable
+                  credential.
+                </td>
+              </tr>
+              <tr>
+                <td>`PRINT`</td>
+                <td><pre>{ type: "PRINT" }</pre></td>
+                <td>
+                  MUST show the print dialog so the contents of the IFRAME can be
+                  printed.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+      
+        <section>
+          <h6>Frame-to-Host Actions</h6>
+      
+          <p>
+            These are used by the iframe to update the host to make adjustments on
+            formatting, or selective redaction.
+          </p>
+      
+          <table class="simple">
+            <thead>
+              <tr>
+                <th>type</th>
+                <th>payload</th>
+                <th>action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>`OBFUSCATE`</td>
+                <td>
+                  <pre>
+      {
+        type: "OBFUSCATE",
+        payload: "a[0].b.c",
+      }            
+                </pre
+                  >
+                </td>
+                <td>
+                  This is used for selective redaction. The Host is informed of the
+                  path of the field that has been obfuscated so that the host can
+                  create an updated version of the document with the selected field
+                  obfuscated.
+                </td>
+              </tr>
+              <tr>
+                <td>`UPDATE_HEIGHT`</td>
+                <td>
+                  <pre>
+      {
+        type: "UPDATE_HEIGHT",
+        payload: 150,
+      }              
+                  </pre>
+                </td>
+                <td>
+                  Notify the Host of the height of the embedded iframe in pixels so
+                  the Host can adjust the size on the browser.
+                </td>
+              </tr>
+              <tr>
+                <td>`UPDATE_TEMPLATES`</td>
+                <td>
+                  <pre>
+      {
+        type: "UPDATE_TEMPLATES",
+        payload: [
+          {
+            id: "template1",
+            label: "template1",
+          },
+          {
+            id: "template2",
+            label: "template2",
+          }
+        ]
+      }              
+                  </pre>
+                </td>
+                <td>
+                  Notify the Host of the list of template names that are usable from
+                  RENDER_METHOD, or GET_TEMPLATES calls.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
       </section>
     </section>
 
