@@ -484,6 +484,206 @@ paper is in a portrait (display is taller than it is wider) orientation.
         />
         <figcaption>Transcript Template</figcaption>
       </figure>
+        <section>
+            <h5>Action API</h5>
+
+            <p>
+                The Host is the application that displays the document with the help of the
+                Template Renderer. The Template Renderer MUST be a web application embedded
+                within an iframe specified by `renderMethod`.`id`. It MUST communicate with the
+                Host application using postMessage API to perform actions.
+            </p>
+
+            <p>
+                All actions follow the same structure. They are composed of `type` and
+                `payload`:
+            </p>
+            <ol class="algorithm">
+                <li>
+                    `type` indicates the kind of action being executed, for instance,
+                    `RENDER_DOCUMENT` means rendering a document. The type of an action is
+                    mandatory.
+                </li>
+                <li>
+                    `payload` indicates optional data associated to the type, for instance,
+                    the content of the document to render.
+                </li>
+            </ol>
+
+            <p>
+                An open source reference implementation is available on
+                <a
+                        href="https://github.com/Open-Attestation/decentralized-renderer-react-components"
+                >GitHub</a
+                >.
+            </p>
+            <p>
+                The interaction between the Host and the Template Renderer is illustrated in
+                the following diagram.
+            </p>
+            <figure id="oa-embedded-sequence-diagram">
+                <img
+                        style="width: 100%"
+                        src="/images/oa-embedded-sequence-diagram.png"
+                        alt="Sequence Diagram"
+                />
+                <figcaption>Sequence Diagram</figcaption>
+            </figure>
+
+            <section>
+                <h6>Host-to-Frame Actions</h6>
+
+                <p>
+                    When the iframe is first displayed, the host sends commands to the iframe
+                    to render the document. The 4 types of actions supported are described
+                    below.
+                </p>
+
+                <table class="simple">
+                    <thead>
+                    <tr>
+                        <th>type</th>
+                        <th>payload</th>
+                        <th>action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>`GET_TEMPLATES`</td>
+                        <td><pre>{ type: "GET_TEMPLATES" }</pre></td>
+                        <td>
+                            Obtain a list of templates supported by the renderer for the given
+                            document. The list of templates is returned from UPDATE_TEMPLATES
+                            call from the iframe.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>`SELECT_TEMPLATE`</td>
+                        <td>
+                  <pre>
+      {
+        type: "SELECT_TEMPLATE",
+        payload: "CUSTOM_TEMPLATE"
+      }
+                  </pre>
+                        </td>
+                        <td>
+                            Select the template to be used for rendering. It should be from the
+                            list returned by GET_TEMPLATES. If not found, a default template is
+                            used.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>`RENDER_DOCUMENT`</td>
+                        <td>
+                  <pre>
+      {
+        type: "RENDER_DOCUMENT",
+        payload: {
+          document: {
+            credentialSubject: …,
+            renderMethod: …
+          }
+        }
+      }
+                  </pre>
+                        </td>
+                        <td>
+                            Render the verifiable credential inside the IFRAME using the
+                            selected template. Document is JSON object form of the verifiable
+                            credential.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>`PRINT`</td>
+                        <td><pre>{ type: "PRINT" }</pre></td>
+                        <td>
+                            MUST show the print dialog so the contents of the IFRAME can be
+                            printed.
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section>
+                <h6>Frame-to-Host Actions</h6>
+
+                <p>
+                    These are used by the iframe to update the host to make adjustments on
+                    formatting, or selective redaction.
+                </p>
+
+                <table class="simple">
+                    <thead>
+                    <tr>
+                        <th>type</th>
+                        <th>payload</th>
+                        <th>action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>`OBFUSCATE`</td>
+                        <td>
+                  <pre>
+      {
+        type: "OBFUSCATE",
+        payload: "a[0].b.c",
+      }
+                </pre
+                >
+                        </td>
+                        <td>
+                            This is used for selective redaction. The Host is informed of the
+                            path of the field that has been obfuscated so that the host can
+                            create an updated version of the document with the selected field
+                            obfuscated.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>`UPDATE_HEIGHT`</td>
+                        <td>
+                  <pre>
+      {
+        type: "UPDATE_HEIGHT",
+        payload: 150,
+      }
+                  </pre>
+                        </td>
+                        <td>
+                            Notify the Host of the height of the embedded iframe in pixels so
+                            the Host can adjust the size on the browser.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>`UPDATE_TEMPLATES`</td>
+                        <td>
+                  <pre>
+      {
+        type: "UPDATE_TEMPLATES",
+        payload: [
+          {
+            id: "template1",
+            label: "template1",
+          },
+          {
+            id: "template2",
+            label: "template2",
+          }
+        ]
+      }
+                  </pre>
+                        </td>
+                        <td>
+                            Notify the Host of the list of template names that are usable from
+                            RENDER_METHOD, or GET_TEMPLATES calls.
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </section>
+        </section>
     </section>
   </section>
 
@@ -531,206 +731,6 @@ string in `svgImage` that matches the key with the associated value in the
         </ol>
       </section>
 
-      <section>
-        <h5>Action API (OpenAttestationEmbeddedRenderer)</h5>
-      
-        <p>
-          The Host is the application that displays the document with the help of the
-          Template Renderer. The Template Renderer MUST be a web application embedded
-          within an iframe specified by renderMethod.id. It MUST communicate with the
-          Host application using postMessage API to perform actions.
-        </p>
-      
-        <p>
-          All actions follow the same structure. They are composed of `type` and
-          `payload`:
-        </p>
-        <ol class="algorithm">
-          <li>
-            `type` indicates the kind of action being executed, for instance,
-            `RENDER_DOCUMENT` means rendering a document. The type of an action is
-            mandatory.
-          </li>
-          <li>
-            `payload` indicates optional data associated to the type, for instance,
-            the content of the document to render.
-          </li>
-        </ol>
-      
-        <p>
-          An open source reference implementation is available on
-          <a
-            href="https://github.com/Open-Attestation/decentralized-renderer-react-components"
-            >GitHub</a
-          >.
-        </p>
-        <p>
-          The interaction between the Host and the Template Renderer is illustrated in
-          the following diagram.
-        </p>
-        <figure id="oa-embedded-sequence-diagram">
-          <img
-            style="width: 100%"
-            src="/images/oa-embedded-sequence-diagram.png"
-            alt="Sequence Diagram"
-          />
-          <figcaption>Sequence Diagram</figcaption>
-        </figure>
-      
-        <section>
-          <h6>Host-to-Frame Actions</h6>
-      
-          <p>
-            When the iframe is first displayed, the host sends commands to the iframe
-            to render the document. The 4 types of actions supported are described
-            below.
-          </p>
-      
-          <table class="simple">
-            <thead>
-              <tr>
-                <th>type</th>
-                <th>payload</th>
-                <th>action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>`GET_TEMPLATES`</td>
-                <td><pre>{ type: "GET_TEMPLATES" }</pre></td>
-                <td>
-                  Obtain a list of templates supported by the renderer for the given
-                  document. The list of templates is returned from UPDATE_TEMPLATES
-                  call from the iframe.
-                </td>
-              </tr>
-              <tr>
-                <td>`SELECT_TEMPLATE`</td>
-                <td>
-                  <pre>
-      {
-        type: "SELECT_TEMPLATE",
-        payload: "CUSTOM_TEMPLATE"
-      }
-                  </pre>
-                </td>
-                <td>
-                  Select the template to be used for rendering. It should be from the
-                  list returned by GET_TEMPLATES. If not found, a default template is
-                  used.
-                </td>
-              </tr>
-              <tr>
-                <td>`RENDER_DOCUMENT`</td>
-                <td>
-                  <pre>
-      { 
-        type: "RENDER_DOCUMENT",
-        payload: {
-          document: {
-            credentialSubject: …,
-            renderMethod: … 
-          } 
-        }
-      }
-                  </pre>
-                </td>
-                <td>
-                  Render the verifiable credential inside the IFRAME using the
-                  selected template. Document is JSON object form of the verifiable
-                  credential.
-                </td>
-              </tr>
-              <tr>
-                <td>`PRINT`</td>
-                <td><pre>{ type: "PRINT" }</pre></td>
-                <td>
-                  MUST show the print dialog so the contents of the IFRAME can be
-                  printed.
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </section>
-      
-        <section>
-          <h6>Frame-to-Host Actions</h6>
-      
-          <p>
-            These are used by the iframe to update the host to make adjustments on
-            formatting, or selective redaction.
-          </p>
-      
-          <table class="simple">
-            <thead>
-              <tr>
-                <th>type</th>
-                <th>payload</th>
-                <th>action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>`OBFUSCATE`</td>
-                <td>
-                  <pre>
-      {
-        type: "OBFUSCATE",
-        payload: "a[0].b.c",
-      }            
-                </pre
-                  >
-                </td>
-                <td>
-                  This is used for selective redaction. The Host is informed of the
-                  path of the field that has been obfuscated so that the host can
-                  create an updated version of the document with the selected field
-                  obfuscated.
-                </td>
-              </tr>
-              <tr>
-                <td>`UPDATE_HEIGHT`</td>
-                <td>
-                  <pre>
-      {
-        type: "UPDATE_HEIGHT",
-        payload: 150,
-      }              
-                  </pre>
-                </td>
-                <td>
-                  Notify the Host of the height of the embedded iframe in pixels so
-                  the Host can adjust the size on the browser.
-                </td>
-              </tr>
-              <tr>
-                <td>`UPDATE_TEMPLATES`</td>
-                <td>
-                  <pre>
-      {
-        type: "UPDATE_TEMPLATES",
-        payload: [
-          {
-            id: "template1",
-            label: "template1",
-          },
-          {
-            id: "template2",
-            label: "template2",
-          }
-        ]
-      }              
-                  </pre>
-                </td>
-                <td>
-                  Notify the Host of the list of template names that are usable from
-                  RENDER_METHOD, or GET_TEMPLATES calls.
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </section>
-      </section>
     </section>
 
     <section>
