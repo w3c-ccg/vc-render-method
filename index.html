@@ -443,7 +443,7 @@ in the example below.
     "template": {
       "id": "https://example.edu/credentials/BachelorDegree.svg",
       "mediaType": "image/svg",
-      "digestMultibase": "zQmerWC85Wg6wFl9znFCwYxApG270iEu5h6JqWAPdhyxz2dR"
+      "digestMultibase": "zQmerWC85Wg6wFl9znFCwYxApG270iEu5h6JqWAPdhyxz2dR",
       "disclosedProperty": [
         "/issuer", "/validFrom", "/credentialSubject/degree/name"
       ]
@@ -455,7 +455,7 @@ in the example below.
 
         <p>
 In the example above, the [=issuer=] has provided a Mustache-based SVG rendering
-template for a bachelor's degree that will be filled in with specific
+template for a Bachelor's degree that will be filled in with specific
 information from the [=verifiable credential=] listed in `disclosedProperty`.
         </p>
 
@@ -479,6 +479,7 @@ template.
   "renderMethod": {
     "type": "TemplateRenderMethod",
     "renderSuite": "svg-mustache",
+    <span class="comment">// the SVG file is embedded in the VC</span>
     "template": "data:image/svg;base64,Qjei89...3jZpW"
   }
 }
@@ -497,7 +498,7 @@ modification by using the `digestMultibase` property.
   "type": "TemplateRenderMethod",
   "renderSuite": "svg-mustache",
   "template": {
-    <span class="comment">// this SVG template is fetched from the Web
+    <span class="comment">// this SVG file is fetched from the Web</span>
     "id": "https://degree.example/bachelors.svg",
     "mediaType": "image/svg",
     "digestMultibase": "zQmerWC85Wg6wFl9znFCwYxApG270iEu5h6JqWAPdhyxz2dR"
@@ -515,7 +516,7 @@ using the `digestMultibase` property:
 {
 <span class="comment">...</span>
 "renderMethod": {
-  <span class="comment">// this render method is fetched from the Web
+  <span class="comment">// this render method is fetched from the Web</span>
   "id": "https://degrees.example/bachelors-svg.jsonld",
   "type": "TemplateRenderMethod",
   "renderSuite": "svg-mustache",
@@ -545,6 +546,7 @@ template.
   "renderMethod": {
     "type": "TemplateRenderMethod",
     "renderSuite": "pdf-mustache",
+    <span class="comment">// this PDF file is embedded in the VC</span>
     "template": "data:application/pdf;base64,k309SK...pwK83b"
   }
 }
@@ -563,7 +565,7 @@ modification by using the `digestMultibase` property.
   "type": "TemplateRenderMethod",
   "renderSuite": "pdf-mustache",
   "template": {
-    <span class="comment">// this SVG template is fetched from the Web
+    <span class="comment">// this PDF file is fetched from the Web</span>
     "id": "https://degree.example/bachelors.pdf",
     "mediaType": "application/pdf",
     "digestMultibase": "zQmznFCwYxApG270iEu5h6JqWAPdhyxz2dRerWC85Wg6wFl9"
@@ -581,7 +583,7 @@ using the `digestMultibase` property:
 {
 <span class="comment">...</span>
 "renderMethod": {
-  <span class="comment">// this render method is fetched from the Web
+  <span class="comment">// this render method is fetched from the Web</span>
   "id": "https://degrees.example/bachelors-pdf.jsonld",
   "type": "TemplateRenderMethod",
   "renderSuite": "pdf-mustache",
@@ -612,7 +614,9 @@ credential.
     "type": "TemplateRenderMethod",
     "renderSuite": "nfc",
     "name": "Tap to send",
+    <span class="comment">// the NFC payload is embedded</span>
     "template": "data:application/octet-stream;base64,2QZkpQGDG...G8XJWnROcY4Biw",
+    <span class="comment">// only the barcode is transmitted over NFC</span>
     "disclosedProperty": ["/credentialSubject/barcode"]
   }
   </span>
