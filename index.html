@@ -524,6 +524,73 @@ using the `digestMultibase` property:
           </pre>
 
         </section>
+
+        <section>
+          <h3>The `pdf-mustache` Render Suite</h3>
+          <p>
+The `pdf-mustache` render suite uses the Mustache templating language to
+modify a PDF file, which is then used to render a visual representation
+of the [=verifiable credential=].
+          </p>
+
+          <p>
+In the example below, a fully embedded PDF file is used as the rendering
+template.
+          </p>
+
+          <pre class="example nohighlight"
+               title="Basic usage of the pdf-mustache render suite">
+{
+  <span class="comment">...</span>
+  "renderMethod": {
+    "type": "TemplateRenderMethod",
+    "renderSuite": "pdf-mustache",
+    "template": "data:application/pdf;base64,k309SK...pwK83b"
+  }
+}
+          </pre>
+
+          <p>
+The next example links to the PDF file on the Web and secures it against
+modification by using the `digestMultibase` property.
+          </p>
+
+          <pre class="example nohighlight"
+              title="Remotely hosted PDF file for a PDF rendering template">
+{
+<span class="comment">...</span>
+"renderMethod": {
+  "type": "TemplateRenderMethod",
+  "renderSuite": "pdf-mustache",
+  "template": {
+    <span class="comment">// this SVG template is fetched from the Web
+    "id": "https://degree.example/bachelors.pdf",
+    "mediaType": "application/pdf",
+    "digestMultibase": "zQmznFCwYxApG270iEu5h6JqWAPdhyxz2dRerWC85Wg6wFl9"
+  }
+}
+          </pre>
+
+          <p>
+The next example links to the rendering template on the Web and secures it
+using the `digestMultibase` property:
+          </p>
+
+          <pre class="example nohighlight"
+              title="Remotely hosted PDF rendering template">
+{
+<span class="comment">...</span>
+"renderMethod": {
+  <span class="comment">// this render method is fetched from the Web
+  "id": "https://degrees.example/bachelors-pdf.jsonld",
+  "type": "TemplateRenderMethod",
+  "renderSuite": "pdf-mustache",
+  "digestMultibase": "zQmEu5h6JqWAPdhyxmz2dRerWC85Wg6wFl9znFCwYxApG270"
+}
+          </pre>
+
+        </section>
+
       </section>
     </section>
 
