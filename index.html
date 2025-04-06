@@ -124,30 +124,79 @@
       };
     </script>
     <style>
-      pre .highlight {
-        font-weight: bold;
-        color: green;
-      }
-      pre .comment {
-        font-weight: bold;
-        color: Gray;
-      }
-      .color-text {
-        font-weight: bold;
-        text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
-      }
-      ol.algorithm {
-        counter-reset: numsection;
-        list-style-type: none;
-      }
-      ol.algorithm li {
-        margin: 0.5em 0;
-      }
-      ol.algorithm li:before {
-        font-weight: bold;
-        counter-increment: numsection;
-        content: counters(numsection, ".") ") ";
-      }
+code {
+  color: rgb(199, 73, 0);
+  font-weight: bold;
+}
+pre {
+  overflow-x: auto;
+  white-space: pre-wrap;
+}
+pre .highlight {
+  font-weight: bold;
+  color: Green;
+}
+pre .subject {
+  font-weight: bold;
+  color: RoyalBlue;
+}
+pre .property {
+  font-weight: bold;
+  color: DarkGoldenrod;
+}
+pre .comment {
+  font-weight: bold;
+  color: SteelBlue;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+code a[href] {
+  color: inherit;
+  border-bottom: none;
+}
+code a[href]:hover {
+  border-bottom: 1px solid #c63501;
+}
+ol.algorithm {
+  counter-reset: numsection;
+  list-style-type: none;
+}
+ol.algorithm li {
+  margin: 0.5em 0;
+}
+ol.algorithm li:before {
+  font-weight: bold;
+  counter-increment: numsection;
+  content: counters(numsection, ".") ") ";
+}
+table.simple {
+  border-collapse: collapse;
+  margin: 25px 0;
+  min-width: 75%;
+  border: 1px solid #dddddd;
+}
+table.simple thead tr {
+  background-color: #005a9c;
+  color: #ffffff;
+  text-align: left;
+}
+table.simple th,
+table.simple td {
+  padding: 12px 15px;
+  vertical-align: top;
+  text-align: left;
+}
+table.simple tbody tr {
+  border-bottom: 1px solid #dddddd;
+}
+table.simple tbody tr:nth-of-type(even) {
+  background-color: #00000008;
+}
+table.simple tbody tr:last-of-type {
+  border-bottom: 2px solid #005a9c;
+}
     </style>
   </head>
   <body>
@@ -171,9 +220,9 @@ not fit for production deployment.
       <h2>Introduction</h2>
 
         <p>
-Rendering methods can be used when the <a>issuer</a> has a specific way that
-they want to express a <a>verifiable credential</a> to an observer through
-a visual, auditory, or haptic mechanism. For example, an <a>issuer</a> of an
+Rendering methods can be used when the [=issuer=] has a specific way that
+they want to express a [=verifiable credential=] to an observer through
+a visual, auditory, or haptic mechanism. For example, an [=issuer=] of an
 employee badge credential might want to include rich imagery of their corporate
 logo and specific placement of employee information in specific areas of the
 badge. They might also want to provide an audio read out of the important
@@ -200,7 +249,7 @@ of this document MUST be enforced.
         <p>
 A <dfn class="lint-ignore">conforming processor</dfn> is any algorithm realized
 as software and/or hardware that generates or consumes a
-<a>conforming render method</a>. Conforming processors MUST produce errors when
+[=conforming render method=]. Conforming processors MUST produce errors when
 non-conforming documents are consumed.
         </p>
         <p>
@@ -230,8 +279,8 @@ for rendering methods
 The `renderMethod` property is a
 <a href="https://www.w3.org/TR/vc-data-model-2.0/#reserved-extension-points">
 reserved extension point</a> in the Verifiable Credentials Data Model
-specification [[VC-DATA-MODEL-2.0]]. An <a>issuer</a> can utilize this
-property in a <a>verifiable credential</a> to express one or more preferred
+specification [[VC-DATA-MODEL-2.0]]. An [=issuer=] can utilize this
+property in a [=verifiable credential=] to express one or more preferred
 render methods.
         </p>
 
@@ -240,9 +289,9 @@ render methods.
           <dd>
 The value of the `renderMethod` property MUST specify one or
 more rendering methods that can be used by software to express the
-<a>verifiable credential</a> using a visual, auditory, or haptic mechanism. Each
+[=verifiable credential=] using a visual, auditory, or haptic mechanism. Each
 `renderMethod` value MUST specify its `type`, for example,
-`SvgRenderingTemplate`. The precise contents of each rendering
+`TemplateRenderMethod`. The precise contents of each rendering
 hint is determined by the specific `renderMethod` `type`
 definition.
           </dd>
@@ -250,12 +299,12 @@ definition.
       </section>
 
       <section>
-        <h4>SvgRenderingTemplate</h4>
+        <h4>TemplateRenderMethod</h4>
 
         <p>
-When an <a>issuer</a> desires to specify SVG rendering instructions for a
-<a>verifiable credential</a>, they MAY add a `render` property that uses the
-data model described below.
+When an [=issuer=] desires to specify template-based rendering instructions
+for a [=verifiable credential=], they MAY add a `render` property that uses
+the data model described below.
         </p>
 
         <table class="simple">
@@ -269,47 +318,101 @@ data model described below.
             <tr>
               <td>id</td>
               <td>
-A URL that dereferences to an SVG image [[SVG]] with an associated
-`image/svg+xml` media type.
+An OPTIONAL [=string=] that follows the [[[URL]]] and, when fetched,
+dereferences to a render template.
               </td>
             </tr>
             <tr>
               <td>type</td>
               <td>
-The <code>type</code> property MUST be <code>SvgRenderingTemplate</code>.
+A REQUIRED [=string=] that MUST be the value `TemplateRenderMethod`.
+              </td>
+            </tr>
+            <tr>
+              <td>renderSuite</td>
+              <td>
+A REQUIRED [=string=] that identifies the algorithms that are used for
+generating the concrete rendering.
               </td>
             </tr>
             <tr>
               <td>name</td>
               <td>
-A name that can be used by a display to express the type of rendering that
-is associated with the render method. This property might be used in a
+An OPTIONAL human-readable [=string=] that can be displayed to provide a hint to
+the type of rendering that will be performed. This property might be used in a
 graphical interface that enables an individual to select between multiple
 presentation modes.
               </td>
             </tr>
             <tr>
-              <td>css3MediaQuery</td>
+              <td>description</td>
               <td>
-A CSS Level 3 Media Query that can be used to specify desired characteristics
-in the display device. If there are multiple render methods, the best match
-to the CSS Level 3 Media Query will be used by default. It is expected that
-an individual could override this preference through a manual process.
+An OPTIONAL human-readable [=string=] that provides a more involved description
+than `name` of when the particular rendering might be useful.
+              </td>
+            </tr>
+            <tr>
+              <td>disclosedProperty</td>
+              <td>
+An OPTIONAL [=list=] of [=string=] values that each conform to the
+[[[RFC6901]]] syntax that specifies which properties from the [=verifiable
+credential=] are exposed when using this specific render method.
+              </td>
+            </tr>
+            <tr>
+              <td>template</td>
+              <td>
+An OPTIONAL [=string=] or [=ordered map|map=] that provides the template that
+will be used to perform the rendering. If the value is a [=string=], it MUST be
+a URL. If the value is a [=ordered map|map=], it MUST conform to the following
+rules:
+                <table class="simple">
+                  <thead>
+                    <tr>
+                      <th style="white-space: nowrap">Property</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>id</td>
+                      <td>
+An REQUIRED [=string=] that follows the [[[URL]]] and, when fetched,
+dereferences to a template such as an SVG or PDF file.
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>mediaType</td>
+                      <td>
+A RECOMMENDED [=string=] that identifies the media type for the `id` value
+as specified in [[[RFC6838]]].
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>digestMultibase</td>
+                      <td>
+An OPTIONAL multibase-encoded Multihash of the template file. The multibase
+value MUST be `z` and the multihash value MUST be SHA-2 with 256-bits of output
+(`0x12`).
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </td>
             </tr>
             <tr>
               <td>digestMultibase</td>
                 <td>
-An optional multibase-encoded multihash of the SVG image. The multibase value
-MUST be `z` and the multihash value MUST be SHA-2 with 256-bits of output
-(`0x12`).
+An OPTIONAL multibase-encoded Multihash of the render method referenced if `id`
+is specified. The multibase value MUST be `z` and the multihash value MUST be
+SHA-2 with 256-bits of output (`0x12`).
                 </td>
               </tr>
             </tbody>
           </table>
 
           <p>
-The data model shown above is expressed in a <a>verifiable credential</a>
+The data model shown above is expressed in a [=verifiable credential=]
 in the example below.
           </p>
 
@@ -332,22 +435,26 @@ in the example below.
       "name": "Bachelor of Science and Arts"
     }
   },
-  <span class="highlight">"renderMethod": [{
-    "id": "https://example.edu/credentials/BachelorDegree.svg",
-    "type": "SvgRenderingTemplate",
-    "name": "Portrait Mode",
-    "css3MediaQuery": "@media (orientation: portrait)",
-    "digestMultibase": "zQmAPdhyxzznFCwYxAp2dRerWC85Wg6wFl9G270iEu5h6JqW"
-  }]
+  <span class="highlight">"renderMethod": {
+    "type": "TemplateRenderMethod",
+    "renderSuite": "svg-mustache",
+    "template": {
+      "id": "https://example.edu/credentials/BachelorDegree.svg",
+      "mediaType": "image/svg",
+      "digestMultibase": "zQmerWC85Wg6wFl9znFCwYxApG270iEu5h6JqWAPdhyxz2dR"
+      "disclosedProperty": [
+        "/issuer", "/validFrom", "/credentialSubject/degree/name"
+      ]
+    }
+  }
   </span>
 }
         </pre>
 
         <p>
-In the example above, the <a>issuer</a> has provided an SVG rendering template
-for a bachelor's degree that will be filled in with the information in the
-<a>verifiable credential</a>. The rendering is preferred when the device or
-paper is in a portrait (display is taller than it is wider) orientation.
+In the example above, the [=issuer=] has provided a Mustache-based SVG rendering
+template for a bachelor's degree that will be filled in with specific
+information from the [=verifiable credential=].
         </p>
     </section>
 
@@ -357,7 +464,7 @@ paper is in a portrait (display is taller than it is wider) orientation.
       <p>
         OpenAttestationEmbeddedRenderer is used by an issuer to render a verifiable
         credential. The verifiable credential is rendered in HTML within an embedded
-        <code>&ltiframe&gt</code> through a Template Renderer website referenced in
+        `&ltiframe&gt` through a Template Renderer website referenced in
         the document. This arrangement allows for interactive selective disclosure
         using OpenAttestationMerkleProofSignature2018.
       </p>
@@ -372,8 +479,8 @@ paper is in a portrait (display is taller than it is wider) orientation.
         and decentralized renderer implementations.
       </p>
       <p>
-        When an <a>issuer</a> desires to specify an embedded rendering instructions
-        for a <a>verifiable credential</a>, they MAY add a `renderMethod` property
+        When an [=issuer=] desires to specify an embedded rendering instructions
+        for a [=verifiable credential=], they MAY add a `renderMethod` property
         that uses the data model described below.
       </p>
 
@@ -409,7 +516,7 @@ paper is in a portrait (display is taller than it is wider) orientation.
       </table>
 
       <p>
-        The data model shown above is expressed in a <a>verifiable credential</a> in
+        The data model shown above is expressed in a [=verifiable credential=] in
         the example below.
       </p>
 
@@ -458,14 +565,14 @@ paper is in a portrait (display is taller than it is wider) orientation.
       </pre>
 
       <p>
-        The <a>verifiable credential</a> specifies a decentralized renderer at
+        The [=verifiable credential=] specifies a decentralized renderer at
         `https://demo-renderer.opencerts.io`, using the template named
         `GOVTECH_DEMO`.
       </p>
       <p>
         The decentralized renderer can support different templates that can provide
         different views of the verifiable credentials. Below are two renderings of
-        the same <a>verifiable credential</a> using different templates.
+        the same [=verifiable credential=] using different templates.
       </p>
 
       <figure id="oa-embedded-certificate">
@@ -696,12 +803,12 @@ for rendering methods.
     </p>
 
     <section>
-      <h5>Render (SvgRenderingTemplate)</h5>
+      <h5>Render (TemplateRenderMethod)</h5>
 
       <p>
 The following algorithm is used to transform the SVG image template into the
 final SVG image that is displayed. The inputs to the algorithm are the
-<a>verifiable credential</a> (`verifiableCredential`) and the SVG image
+[=verifiable credential=] (`verifiableCredential`) and the SVG image
 source code (`svgImage`). The output is a SVG image.
       </p>
 
