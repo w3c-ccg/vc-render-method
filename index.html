@@ -352,12 +352,12 @@ than `name` of when the particular rendering might be useful.
               </td>
             </tr>
             <tr>
-              <td>disclosedProperty</td>
+              <td>renderProperty</td>
               <td>
 An OPTIONAL [=list=] of [=string=] values that each conform to the
 [[[RFC6901]]] syntax that specifies which properties from the [=verifiable
 credential=] are exposed when using this specific render method. If
-`disclosedProperty` is not provided, the entire [=verifiable credential=] is
+`renderProperty` is not provided, the entire [=verifiable credential=] is
 presumed to be shared when the render method is used.
               </td>
             </tr>
@@ -444,7 +444,7 @@ in the example below.
       "id": "https://example.edu/credentials/BachelorDegree.svg",
       "mediaType": "image/svg",
       "digestMultibase": "zQmerWC85Wg6wFl9znFCwYxApG270iEu5h6JqWAPdhyxz2dR",
-      "disclosedProperty": [
+      "renderProperty": [
         "/issuer", "/validFrom", "/credentialSubject/degree/name"
       ]
     }
@@ -456,7 +456,7 @@ in the example below.
         <p>
 In the example above, the [=issuer=] has provided a Mustache-based SVG rendering
 template for a Bachelor's degree that will be filled in with specific
-information from the [=verifiable credential=] listed in `disclosedProperty`.
+information from the [=verifiable credential=] listed in `renderProperty`.
         </p>
 
         <section>
@@ -617,7 +617,7 @@ credential.
     <span class="comment">// the NFC payload is embedded</span>
     "template": "data:application/octet-stream;base64,2QZkpQGDG...G8XJWnROcY4Biw",
     <span class="comment">// only the barcode is transmitted over NFC</span>
-    "disclosedProperty": ["/credentialSubject/barcode"]
+    "renderProperty": ["/credentialSubject/barcode"]
   }
   </span>
 }
