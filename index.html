@@ -441,8 +441,8 @@ in the example below.
     "type": "TemplateRenderMethod",
     "renderSuite": "svg-mustache",
     "template": {
-      "id": "https://example.edu/credentials/BachelorDegree.svg",
-      "mediaType": "image/svg",
+      "id": "https://example.edu/credential-templates/BachelorDegree",
+      "mediaType": "image/svg+xml",
       "digestMultibase": "zQmerWC85Wg6wFl9znFCwYxApG270iEu5h6JqWAPdhyxz2dR",
       "renderProperty": [
         "/issuer", "/validFrom", "/credentialSubject/degree/name"
@@ -480,7 +480,7 @@ template.
     "type": "TemplateRenderMethod",
     "renderSuite": "svg-mustache",
     <span class="comment">// the SVG file is embedded in the VC</span>
-    "template": "data:image/svg;base64,Qjei89...3jZpW"
+    "template": "data:image/svg+xml;base64,Qjei89...3jZpW"
   }
 }
           </pre>
@@ -499,8 +499,8 @@ modification by using the `digestMultibase` property.
   "renderSuite": "svg-mustache",
   "template": {
     <span class="comment">// this SVG file is fetched from the Web</span>
-    "id": "https://degree.example/bachelors.svg",
-    "mediaType": "image/svg",
+    "id": "https://degree.example/credential-templates/bachelors",
+    "mediaType": "image/svg+xml",
     "digestMultibase": "zQmerWC85Wg6wFl9znFCwYxApG270iEu5h6JqWAPdhyxz2dR"
   }
 }
@@ -518,6 +518,7 @@ using the `digestMultibase` property:
 "renderMethod": {
   <span class="comment">// this render method is fetched from the Web</span>
   "id": "https://degrees.example/bachelors-svg.jsonld",
+  "mediaType": "application/ld+json",
   "type": "TemplateRenderMethod",
   "renderSuite": "svg-mustache",
   "digestMultibase": "zQmG270iEu5h6JqWAPdhyxz2dRerWC85Wg6wFl9znFCwYxAp"
